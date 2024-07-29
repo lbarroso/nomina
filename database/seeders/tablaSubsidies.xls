@@ -1,0 +1,23 @@
+
+<html xmlns:o="urn:schemas-microsoft-com:office:office"
+xmlns:x="urn:schemas-microsoft-com:office:excel"
+xmlns="http://www.w3.org/TR/REC-html40">
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+	<meta http-equiv="Content-type" content="text/html;charset=utf-8" />
+<style id="Classeur1_16681_Styles">
+</style>
+
+</head>
+<body>
+
+<div id="Classeur1_16681" align=center x:publishsource="Excel">
+
+<table x:str border=0 cellpadding=0 cellspacing=0 width=100% style="border-collapse: collapse">
+<tr><td class=xl2216681 nowrap><b>id</b></td><td class=xl2216681 nowrap><b>lim_inf</b></td><td class=xl2216681 nowrap><b>lim_sup</b></td><td class=xl2216681 nowrap><b>cuota_fija</b></td></tr><tr><td class=xl2216681 nowrap>1</td><td class=xl2216681 nowrap>0.01</td><td class=xl2216681 nowrap>407.33</td><td class=xl2216681 nowrap>93.73</td></tr><tr><td class=xl2216681 nowrap>2</td><td class=xl2216681 nowrap>407.34</td><td class=xl2216681 nowrap>610.96</td><td class=xl2216681 nowrap>93.66</td></tr><tr><td class=xl2216681 nowrap>3</td><td class=xl2216681 nowrap>610.97</td><td class=xl2216681 nowrap>799.68</td><td class=xl2216681 nowrap>93.66</td></tr><tr><td class=xl2216681 nowrap>4</td><td class=xl2216681 nowrap>799.69</td><td class=xl2216681 nowrap>814.66</td><td class=xl2216681 nowrap>90.44</td></tr><tr><td class=xl2216681 nowrap>5</td><td class=xl2216681 nowrap>814.67</td><td class=xl2216681 nowrap>1023.75</td><td class=xl2216681 nowrap>88.06</td></tr><tr><td class=xl2216681 nowrap>6</td><td class=xl2216681 nowrap>1023.76</td><td class=xl2216681 nowrap>1086.19</td><td class=xl2216681 nowrap>81.55</td></tr><tr><td class=xl2216681 nowrap>7</td><td class=xl2216681 nowrap>1086.20</td><td class=xl2216681 nowrap>1228.57</td><td class=xl2216681 nowrap>74.83</td></tr><tr><td class=xl2216681 nowrap>8</td><td class=xl2216681 nowrap>1228.58</td><td class=xl2216681 nowrap>1433.32</td><td class=xl2216681 nowrap>67.83</td></tr><tr><td class=xl2216681 nowrap>9</td><td class=xl2216681 nowrap>1433.33</td><td class=xl2216681 nowrap>1638.07</td><td class=xl2216681 nowrap>58.38</td></tr><tr><td class=xl2216681 nowrap>10</td><td class=xl2216681 nowrap>1638.08</td><td class=xl2216681 nowrap>1699.88</td><td class=xl2216681 nowrap>50.12</td></tr><tr><td class=xl2216681 nowrap>11</td><td class=xl2216681 nowrap>1699.89</td><td class=xl2216681 nowrap>999999.99</td><td class=xl2216681 nowrap>0.00</td></tr>
+</table>
+</div>
+</body>
+</html>
