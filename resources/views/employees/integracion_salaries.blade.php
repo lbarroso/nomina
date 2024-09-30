@@ -42,7 +42,7 @@
 				
 					<table class="table table-striped table-bordered table-hover" id="example1" style="width:100%; font-size:11pt">
 					
-						 <thead class="thead-dark">
+						 <thead class="table-custom">
 							<tr>
 								<th>&nbsp;</th>
 								<th>SDI</th>								
@@ -78,21 +78,13 @@
 									$salarioDiario = $employee->salarioDiario($employee->salary->tab_vig);	
 									$salarioFijo = $salarioDiario + $employee->primaVacacional($employee->vacaciones, $salarioDiario) + $employee->aguinaldoDiario($salarioDiario);
 									$parteVariable = $employee->parteVariable($calendar->bimestre);
-								@endphp
+								@endphp								
 								
-								@if($employee->salary->puesto == "VELADOR")
-									@php
-										$pagoDiaDomingo = $employee->pagoDiaDomingo($salarioDiario);
-										$primaDominical = $employee->primaDominical($pagoDiaDomingo);
-										$pagoFijoVelador = $pagoDiaDomingo + $primaDominical;
-									@endphp
-								@else
-									@php
-										$pagoDiaDomingo = 0;
-										$primaDominical = 0;
-										$pagoFijoVelador = 0;										
-									@endphp									
-								@endif
+								@php
+									$pagoDiaDomingo = $employee->pagoDiaDomingo;
+									$primaDominical = $employee->primaDominical;
+									$pagoFijoVelador = $pagoDiaDomingo + $primaDominical;
+								@endphp
 								
 								@php
 									$salarioDiarioIntegrado = $pagoFijoVelador + $salarioFijo;

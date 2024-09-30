@@ -20,7 +20,7 @@
 				
 					<table class="table table-striped table-bordered table-hover" id="example1" style="width:100%; ">
 					
-						 <thead class="thead-dark">
+						 <thead class="table-custom">
 							<tr>
 								<th> Status </th>
 								<th> Semana  </th>

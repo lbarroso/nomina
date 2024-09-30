@@ -45,7 +45,9 @@ class CalcularNominaService
         $this->insertarNomina($this->crearNominaData($calendar, $employee, 57, $imss, 'deduccion'));
         if($isr > 0)$this->insertarNomina($this->crearNominaData($calendar, $employee, 58, $isr, 'deduccion'));
         if($subsidio > 0)$this->insertarNomina($this->crearNominaData($calendar, $employee, 99, $subsidio, 'informativo'));
-
+		// guardar SDI
+		$this->insertarNomina($this->crearNominaData($calendar, $employee, 3, $SDI, 'informativo'));
+		
         // dump($isrNeto.'|'.$subsidio.'|'.$imss.'|'.$isr);
         return [
             'isrNeto' => number_format($isrNeto, 2),
@@ -69,6 +71,14 @@ class CalcularNominaService
     {
         // Insertar datos en la nómina
         $this->insertarNomina($this->crearNominaData($calendar, $employee, 1, $sueldoSemanal, 'percepcion'));        
+
+    }
+
+    // infonavit
+    public function infonavit($monto, $employee, $calendar)
+    {
+        // Insertar datos en la nómina
+        $this->insertarNomina($this->crearNominaData($calendar, $employee, 83, $monto, 'deduccion'));
 
     }
 
@@ -150,7 +160,7 @@ class CalcularNominaService
             
             $semanaCalendarioFinal = $semanaCalendarioFinal - 1;
 
-            $totalMensual = NominaConcept::getSueldoGrabado($calendar->year, $calendar->almcnt, $employee->expediente, $semanaCalendarioInicio, $semanaCalendarioFinal);
+            $totalMensual = NominaConcept::getSueldoGrabado($calendar->year, $calendar->almcnt, $employee->expediente, $semanaCalendarioInicio, $semanaCalendarioFinal, $UMA);
             
             $totalMensual = $totalMensual + $sueldoSemanalGravado;
 
@@ -176,7 +186,7 @@ class CalcularNominaService
         $semanas = ($semanaCalendarioFinal - $semanaCalendario) + 1;
         
         // total sueldo pagado
-        $totalMensual = NominaConcept::getSueldoGrabado($calendar->year, $calendar->almcnt, $employee->expediente, $semanaCalendarioInicio, $semanaCalendario - 1);
+        $totalMensual = NominaConcept::getSueldoGrabado($calendar->year, $calendar->almcnt, $employee->expediente, $semanaCalendarioInicio, $semanaCalendario - 1, $UMA);
         
         $totalMensual = $totalMensual + ($sueldoSemanalGravado * $semanas);
         

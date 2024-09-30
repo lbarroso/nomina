@@ -55,7 +55,7 @@ class NominaConcept extends Model
      * @param int $semanaCalendarioFinal
      * @return float
      */
-    public function scopeGetSueldoGrabado($query, $year, $almcnt, $expediente, $semanaCalendarioInicio, $semanaCalendarioFinal)
+    public function scopeGetSueldoGrabado($query, $year, $almcnt, $expediente, $semanaCalendarioInicio, $semanaCalendarioFinal, $UMA)
     {
 		
         $concepts = $query->join('concepts', 'nomina_concepts.concept_id', '=', 'concepts.id')
@@ -72,12 +72,44 @@ class NominaConcept extends Model
         foreach ($concepts as $concept) {
 			// pago dia domingo
 			if($concept->id == 7) $concept->monto = $concept->monto * 0.50;
-			
+			// prima vacacional
+			if($concept->id == 9){
+				$exedente = 15 * $UMA;
+				$exedente = $concept->monto - $exedente;
+				if($exedente > 0) $concept->monto = $exedente;
+			} 
+            // dias festivos
+            if($concept->id == 12){
+                $concept->monto = $concept->monto * 0.50;
+            }
+				
 			$sueldoGrabado += $concept->monto;
         }
 
         return $sueldoGrabado;
     }
+	
+	// elaboracion del calculo
+	public function scopeGetFechaElaboracion($query, $year, $almcnt, $semanaCalendario)
+	{
+		// Obtener la fecha del primer registro que cumpla con las condiciones
+		$fecha = $query->where('year', $year)
+			->where('almcnt', $almcnt)
+			->where('semana', $semanaCalendario)
+			->where('concept_id', 1)
+			->first(['fecha']);		
+			
+		// Si se encuentra un registro, formatear la fecha
+		if ($fecha) {
+			$formattedDate = Carbon::parse($fecha->fecha)->format('d-m-Y');
+		} else {
+			$formattedDate = ''; // O manejar el caso en que no se encuentre un registro
+		}
+
+		// Retornar la fecha formateada
+		return $formattedDate;
+			
+	}
 	
     public function scopeGetDiasTrabajados($query, $year, $almcnt, $expediente, $semanaCalendarioInicio, $semanaCalendarioFinal)
     {
@@ -122,7 +154,7 @@ class NominaConcept extends Model
             ->where('nomina_concepts.semana', $semanaCalendario)
             ->sum('nomina_concepts.diasPagados');
     }
-
+	
 	// percepciones por empleado
 	public function ScopeGetPercepciones($query, $year, $almcnt, $expediente, $semanaCalendario)
 	{
@@ -175,6 +207,17 @@ class NominaConcept extends Model
 			->where('nomina_concepts.semana', $semana)
 			->sum('nomina_concepts.monto');
     }	
+	
+	// monto por concepto
+    public function scopeGetMonto($query, $year, $almcnt, $expediente, $concept_id, $semanaCalendarioInicio, $semanaCalendarioFinal)
+    {
+		return $query->where('nomina_concepts.year', $year)
+			->where('nomina_concepts.almcnt', $almcnt)
+			->where('nomina_concepts.concept_id', $concept_id) // concepto
+			->where('nomina_concepts.expediente', $expediente)
+			->whereBetween('nomina_concepts.semana', [$semanaCalendarioInicio, $semanaCalendarioFinal])
+			->sum('nomina_concepts.monto');
+    }		
 	
 	
 } // class

@@ -160,6 +160,7 @@ function find(id){
 			$('#fechaIngreso').val(response.fechaIngreso);
 			$('#codigoPostal').val(response.codigoPostal);
 			$('#infonavit').val(response.infonavit);
+	
 			if(response.status == "1"){
 				$('#check-status').html('<div class="alert alert-success"> <i class="fas fa-check-circle"></i>  ACTIVO</div>');
 			}else{

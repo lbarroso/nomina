@@ -26,7 +26,7 @@
 				
 					<table class="table table-striped table-bordered table-hover" id="example1"  style="width:100%; font-size:11pt">
 					
-						 <thead class="thead-dark">
+						 <thead class="table-custom">
 							<tr>
 								<th> <i class="fas fa-list-ol"></i> </th>
 								<th> Concepto  </th>

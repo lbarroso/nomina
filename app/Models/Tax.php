@@ -23,6 +23,7 @@ class Tax extends Model
         
         $row = $query->where('limiteInferior', '<=', $sueldoGravado)
         ->where('limiteSuperior', '>=', $sueldoGravado)
+		->where('periodo', 'semanal')
         ->first();
 
         $diferencia = $sueldoGravado - $row->limiteInferior;

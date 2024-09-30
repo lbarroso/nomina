@@ -57,23 +57,25 @@
 					</div>
 				</div>
 				
+			
+
+				<!-- Sección para actualizar atributos de Employee -->
+				<h4>Elementos variables</h4>
+				
 				<div class="form-group row">
 					<label for="pagoDiaDomingo" class="col-sm-4 col-form-label">Pago Día Domingo: <small class="text-muted">(salario diario * 2 / 7) </small>  </label>
 					<div class="col-sm-8">
-						<input type="text" class="form-control" id="pagoDiaDomingo" value="{{ number_format($pagoDiaDomingo,2) }}" readonly>
+						<input type="text" class="form-control" name="pagoDiaDomingo" id="pagoDiaDomingo" value="{{ old('valeMensual', $employee->pagoDiaDomingo) }}" >
 					</div>
 				</div>				
 				
 				<div class="form-group row">
 					<label for="primaDominical" class="col-sm-4 col-form-label">Prima Dominical: <small class="text-muted"> (pago día domingo * 0.25) </small> </label>
 					<div class="col-sm-8">
-						<input type="text" class="form-control" id="primaDominical" value="{{ number_format($primaDominical,2) }}" readonly>
+						<input type="text" class="form-control" name="primaDominical" id="primaDominical" value="{{ old('valeMensual', $employee->primaDominical) }}" >
 					</div>
-				</div>					
+				</div>		
 
-				<!-- Sección para actualizar atributos de Employee -->
-				<h4>Elementos variables</h4>
-				
 				<div class="form-group row">
 					<label for="valeMensual" class="col-sm-4 col-form-label">Vale Mensual:</label>
 					<div class="col-sm-8">

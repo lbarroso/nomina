@@ -1,10 +1,13 @@
 @extends('layouts.main')
 
 @section('content')
+
     <div class="card">
+	
         <div class="card-header">
             <h2>Movimientos por empleado</h2>
         </div>
+		
         <div class="card-body">
             @if(session('success'))
                 <div class="alert alert-success">
@@ -25,7 +28,7 @@
 
                     <div class="form-group col-md-6">
                         <label for="employee_id">Empleado</label>
-                        <select name="employee_id" id="employee_id" class="form-control" required>
+                        <select name="employee_id" id="employee_id" class="form-control text-uppercase" required>
                             <option value="">SELECCIONAR UNA OPCIÓN</option>
                             @foreach($employees as $employee)
                                 <option value="{{ $employee->id }}">{{ $employee->nombre }} {{ $employee->paterno }} {{ $employee->materno }} : {{ $employee->salary->puesto }}</option>
@@ -59,7 +62,7 @@
 			<h3 class="text-muted">Movimientos Agregados</h3>
 			
             @if($movements->isEmpty())
-                <div class="alert alert-info">No hay movimientos agregados.</div>
+                <div class="alert alert-light">No hay movimientos agregados.</div>
             @else			
 					
 				<table class="table table-bordered text-muted">
@@ -92,8 +95,15 @@
 				</table>
 				
 			@endif
-			
+						
         </div>
+		
+		<div class="card-footer">
+			<div class="form-group col-md-12">
+				<div id="alerta"></div>
+			</div>
+		</div>
+		
     </div>
 	
 <script>
@@ -103,10 +113,11 @@
             const montoGroup = document.getElementById('monto-group');
 			const calculoButton = document.getElementById('calculoButton');
 			const count = {{ $count }};
+			const alerta = document.getElementById('alerta');
 			
         if (count > 0) {
             calculoButton.disabled = true;
-	
+			alerta.innerHTML = '<div class="alert alert-warning alert-dismissible"> <h5><i class="icon fas fa-exclamation-triangle"></i>  El cálculo de fórmulas para esta semana ya ha sido aplicado. </h5> <p> 1. Para recalcular las fórmulas, intente realizar el reseteo de movimientos. <a class="link" href="{{ route('reset.form') }}">resetear movimientos</a> <br> 2. Para ver los movimientos calculados, vaya a este enlace. <a class="link" href="{{ route('impresion.tabla') }}">impresión listado de nómina </a> </p>  </div>';
         }			
 
             conceptSelect.addEventListener('change', function () {

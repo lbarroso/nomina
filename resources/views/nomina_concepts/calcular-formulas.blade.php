@@ -7,7 +7,6 @@
 	<div class="card-header">
 		<div class="d-flex justify-content-between align-items-center mb-3">
 			<h2> Aplicar cálculo de formulas</h2>
-			
 		</div> 		
 	</div>
 	
@@ -18,6 +17,16 @@
 				{{ session('success') }}
 			</div>
 		@endif
+
+        @if($errors->any())
+            <div class="alert alert-danger">
+                <ul>
+                    @foreach($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif		
 
 		<form action="{{ route('calcular.nomina') }}" method="POST">
 			@csrf
@@ -71,9 +80,9 @@
 	</div>
 	
 	<div class="card-footer">
-	 <div class="form-group col-md-12">
-		<div id="alerta"></div>
-	</div>
+		<div class="form-group col-md-12">
+			<div id="alerta"></div>
+		</div>
 	</div>
 			
 </div>

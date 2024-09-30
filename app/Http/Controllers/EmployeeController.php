@@ -3,11 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Models\Employee;
+use App\Models\Company;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Salary;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
+use Excel;
+use App\Exports\EmployeeExport;
+use PDF;
 
 class EmployeeController extends Controller
 {
@@ -59,6 +63,7 @@ class EmployeeController extends Controller
             'salary_id' => 'required',
             'fechaNacimiento' => 'required|date',
             'codigoPostal' => 'required|string|max:5',
+            'estado' => 'required',
         ]);
 
         try {
@@ -78,6 +83,7 @@ class EmployeeController extends Controller
                 'salary_id' => $request->salary_id,
                 'fechaNacimiento' => $request->fechaNacimiento,
                 'codigoPostal' => $request->codigoPostal,
+                'estado' => $request->estado,
             ]);        
             
             return redirect()->route('employees.index')->with('success', 'Empleado agregado correctamente.');            
@@ -156,5 +162,31 @@ class EmployeeController extends Controller
 
         return redirect()->route('employees.index')->with('success', 'Empleado dado de baja correctamente.');
     }    
+
+    public function excel()
+    {
+        return Excel::download(new EmployeeExport, 'Empleados.xls');
+    }
+
+    /**
+     * reporte en PDF
+     */
+    public function plantillaPdf(Request $request)
+    {
+        $user = Auth::user();
+
+        date_default_timezone_set('America/Mexico_City');
+        $fecha  = date('d-m-Y\TH:i:s');
+
+        $company = Company::find($user->almcnt);
+
+        $employees = Employee::with('salary')->where('almcnt',Auth::user()->almcnt)->where('status','1')->orderBy('curp')->get();
+        
+        // Generar PDF
+        $pdf = PDF::loadview('employees.plantilla-pdf', compact('employees','company','fecha'));
+
+        return $pdf->setPaper('letter')->stream('PlantillaEmpleados_'.$fecha.'.pdf'); 
+
+    }
 
 } // class

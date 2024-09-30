@@ -70,13 +70,15 @@ class HomeController extends Controller
             'valeMensual' => 'numeric|nullable',
             'valeNavideno' => 'numeric|nullable',
             'variableOtro' => 'numeric|nullable',
+            'pagoDiaDomingo' => 'numeric|nullable',
+            'primaDominical' => 'numeric|nullable',
             'bimestre' => 'required|numeric|between:58,62',
             'id' => 'required|exists:employees,id',     
         ]); 
 
         try {
             $employee = Employee::findOrFail($request->id);
-            $employee->update($request->only('valeMensual', 'valeNavideno', 'variableOtro'));
+            $employee->update($request->only('valeMensual', 'valeNavideno', 'variableOtro', 'pagoDiaDomingo', 'primaDominical'));
     
             Calendar::where('mes', $request->mes)
             ->where('almcnt', Auth::user()->almcnt)

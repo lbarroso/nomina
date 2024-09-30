@@ -9,6 +9,15 @@ use App\Http\Controllers\ConceptController;
 use App\Http\Controllers\CalcularNominaController;
 use App\Http\Controllers\NominaConceptController;
 use App\Http\Controllers\ImpresionNominaController;
+use App\Http\Controllers\FirmaController;
+use App\Http\Controllers\PolizaController;
+use App\Http\Controllers\ReciboController;
+use App\Http\Controllers\ReportController;
+use App\Http\Controllers\PlantillaNominaController;
+use App\Http\Controllers\PlantillaEmployeeController;
+use App\Http\Controllers\AcumuladoNominaController;
+use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\PasswordController;
 
 
 Route::get('/', function () {
@@ -29,6 +38,7 @@ Route::get('terminate/{id}',[EmployeeController::class,'showTerminateForm']);
 Route::get('activate/{id}',[EmployeeController::class,'activate']);
 Route::post('employees/terminate', [EmployeeController::class, 'terminate'])->name('employees.terminate');
 Route::get('employee/create', [EmployeeController::class, 'create'])->name('employee.create');
+Route::get('employees/plantilla/pdf', [EmployeeController::class, 'plantillapdf'])->name('employees.plantillapdf');
 
 // salarios
 Route::get('salaries', [SalaryController::class, 'index'])->name('salaries.index');
@@ -47,9 +57,47 @@ Route::get('/calcular-formulas', [CalcularNominaController::class, 'calcularform
 Route::post('/calcular-nomina', [CalcularNominaController::class, 'calcularNomina'])->name('calcular.nomina');
 Route::get('/calculo-success', [CalcularNominaController::class, 'calculosuccess'])->name('calculo.success');
 Route::get('/reset-form', [CalcularNominaController::class, 'resetform'])->name('reset.form');
+Route::get('/delete-form', [CalcularNominaController::class, 'deleteform'])->name('delete.form');
 Route::post('/reset-movements', [CalcularNominaController::class, 'resetMovements'])->name('reset.movements');
+Route::post('/delete-movements', [CalcularNominaController::class, 'deleteMovements'])->name('delete.movements');
+// cerrar nomina
+Route::get('/cierre-nomina', [CalcularNominaController::class, 'cierrenomina'])->name('cierre.nomina');
+Route::post('/close-nomina', [CalcularNominaController::class, 'closeNomina'])->name('close.nomina');
 
 // reportes
 Route::get('/impresion-tabla', [ImpresionNominaController::class, 'impresiontabla'])->name('impresion.tabla');
 Route::post('/impresion-tabla', [ImpresionNominaController::class, 'impresiontabla'])->name('impresion.tabla');
-Route::get('/impresion-pdf', [ImpresionNominaController::class, 'pdf'])->name('impresion.pdf');
+Route::get('/impresion-pdf/{semana}', [ImpresionNominaController::class, 'pdf'])->name('impresion.pdf');
+Route::get('/poliza-tabla', [PolizaController::class, 'polizatabla'])->name('poliza.tabla');
+Route::post('/poliza-tabla', [PolizaController::class, 'polizatabla'])->name('poliza.tabla');
+Route::get('/poliza-pdf/{semana}', [PolizaController::class, 'pdf'])->name('poliza.pdf');
+Route::get('/recibo-tabla', [ReciboController::class, 'recibotabla'])->name('recibo.tabla');
+Route::post('/recibo-tabla', [ReciboController::class, 'recibotabla'])->name('recibo.tabla');
+Route::get('/recibo-pdf/{semana}', [ReciboController::class, 'pdf'])->name('recibo.pdf');
+// acumulado
+Route::get('/acumualdo', [AcumuladoNominaController::class, 'index'])->name('acumulado.index');
+Route::post('/acumulado/post', [AcumuladoNominaController::class, 'acumulado'])->name('acumulado.post');
+
+// reportes Excel
+Route::get('/empleados-excel', [EmployeeController::class, 'excel'])->name('empleados.excel');
+Route::get('export', [ReportController::class, 'export'])->name('export');
+
+// firmas
+Route::get('/firmas', [FirmaController::class, 'create'])->name('firmas.create');
+Route::post('/firmas/update', [FirmaController::class, 'update'])->name('firmas.update');
+
+// plantillas
+Route::get('/plantillas', [PlantillaNominaController::class, 'index'])->name('plantillas.index');
+Route::post('/plantilla-nomina/store', [PlantillaNominaController::class, 'store'])->name('plantilla.nomina.store');
+Route::get('/plantilla-nomina/download/{semana}', [PlantillaNominaController::class, 'excel'])->name('plantilla.nomina.download');
+Route::post('/plantilla-employee/store', [PlantillaEmployeeController::class, 'store'])->name('plantilla.employee.store');
+Route::get('/plantilla-employee/download/{semana}', [PlantillaEmployeeController::class, 'excel'])->name('plantilla.employee.download');
+
+// rutas para las notificaciones
+Route::resource('notifications', NotificationController::class)->only(['index', 'store']);
+Route::patch('notifications/{id}/mark-as-read', [NotificationController::class, 'markAsRead'])->name('notifications.markAsRead');
+
+// Mostrar el formulario para cambiar la contraseña
+Route::get('change-password', [PasswordController::class, 'changePasswordForm'])->name('password.change');
+// Actualizar la contraseña
+Route::put('update-password', [PasswordController::class, 'updatePassword'])->name('password.update');

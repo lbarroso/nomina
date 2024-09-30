@@ -29,16 +29,30 @@ class NominaConceptController extends Controller
         ->where('puntero', 1)
         ->first();
 
-        $movements = NominaConcept::join('employees', 'nomina_concepts.expediente', '=', 'employees.expediente')
+        /*
+        $movements = NominaConcept::join('employees', 'nomina_concepts.expediente', '=', 'employees.expediente')        
         ->join('concepts', 'nomina_concepts.concept_id', '=', 'concepts.id')
         ->where('nomina_concepts.year', $calendar->year)
         ->where('nomina_concepts.almcnt', $calendar->almcnt)
         ->where('nomina_concepts.semana', $calendar->semana)
         ->where('nomina_concepts.calculo', 0)
-        ->orderBy('employees.curp')
+        ->orderBy('nomina_concepts.id','DESC')
         ->select('nomina_concepts.id','employees.nombre', 'employees.paterno', 'employees.materno', 'concepts.descripcion', 'nomina_concepts.monto')
         ->get();  
-
+        */
+        $movements = NominaConcept::join('employees', function($join) {
+            $join->on('nomina_concepts.expediente', '=', 'employees.expediente')
+                 ->on('nomina_concepts.almcnt', '=', 'employees.almcnt');
+        })
+        ->join('concepts', 'nomina_concepts.concept_id', '=', 'concepts.id')
+        ->where('nomina_concepts.year', $calendar->year)
+        ->where('nomina_concepts.almcnt', $calendar->almcnt)
+        ->where('nomina_concepts.semana', $calendar->semana)
+        ->where('nomina_concepts.calculo', 0)
+        ->orderBy('nomina_concepts.id', 'DESC')
+        ->select('nomina_concepts.id', 'employees.nombre', 'employees.paterno', 'employees.materno', 'concepts.descripcion', 'nomina_concepts.monto')
+        ->get();
+                
         $count = NominaConcept::where('year', $user->currentYear)
         ->where('almcnt', $user->almcnt)
         ->where('semana', $calendar->semana)

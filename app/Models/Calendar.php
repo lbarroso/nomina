@@ -68,12 +68,12 @@ class Calendar extends Model
     public function scopeGetSemanaCalendarioInicio($query, $mesCalendario, $almcnt)
     {
 
-            $row = $query->where('almcnt', $almcnt)
-            ->where('mes', $mesCalendario)
-            ->orderBy('semana', 'ASC')
-            ->first();   
-            
-            return $row->semana;
+		$row = $query->where('almcnt', $almcnt)
+		->where('mes', $mesCalendario)
+		->orderBy('semana', 'ASC')
+		->first();   
+		
+		return $row->semana;
     }
 
     public function scopeGetSemanaCalendarioFinal($query, $mesCalendario, $almcnt)
@@ -86,7 +86,7 @@ class Calendar extends Model
         return $row->semana;
     }    
 	
-	// 
+	// ultima semana 
     public function scopeGetUltimaSemanaCalendario($query, $year, $almcnt)
     {
         $row = $query->where('year', $year)
@@ -96,11 +96,38 @@ class Calendar extends Model
         
         return $row->semana;
     }  	
+	
+	// fecha de pago plantilla excel
+    public function scopeGetFechaPago($query, $year, $almcnt, $semana)
+    {
+        $row = $query->where('year', $year)
+		->where('almcnt', $almcnt)
+		->where('semana', $semana)
+        ->first();   
+        
+        return Carbon::parse($row->fechaFin)->format('d/m/Y');
+    } 	
+	
+	// ultima semana cerrada
+    public function scopeGetUltimaSemanaCerrada($query, $year, $almcnt)
+    {
+        $row = $query->where('year', $year)
+		->where('almcnt', $almcnt)
+		->where('status', 1)
+        ->orderBy('semana', 'DESC')
+        ->first();   
+        
+        return $row->semana;
+    }  		
 
     /*
     UPDATE calendars 
     SET bimestre =62
     WHERE mes IN(7,8)
+    
+    UPDATE calendars 
+    SET bimestre =61
+    WHERE mes IN(9,10)	
     */
 
 } // class

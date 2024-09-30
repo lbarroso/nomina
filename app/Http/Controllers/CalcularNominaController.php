@@ -50,53 +50,115 @@ class CalcularNominaController extends Controller
         // CALCULAR NOMINA 
         foreach ($empleados as $employee) {
 			$UMA =  $uma == "actual" ? $employee->salary->uma_vig : $employee->salary->uma_ant;
+            
             $sueldoMensual =  $tabulador == "actual" ? $employee->salary->tab_vig : $employee->salary->tab_ant; 
 			$salarioDiario = $sueldoMensual / 30;
 			$sueldoSemanal = $salarioDiario * $calendar->diasPagados; 
-            
+
+            // pagar solo dias trabajados
+            $pagarSoloDiasTrabajados = 'NO';            
+
             // incapacidad
             $diasIncapacidad = NominaConcept::getIncapacidad($calendar->year, $calendar->almcnt, $employee->expediente, $calendar->semana);
             
             if($diasIncapacidad >= $calendar->diasPagados){
-                $this->calcularNominaService->incapacidad($sueldoSemanal, $employee, $calendar);                
+                $this->calcularNominaService->incapacidad($sueldoSemanal, $employee, $calendar);
             }else{
+
+                // infonavit
+                $infonavit = Employee::where('almcnt', $calendar->almcnt)->where('expediente', $employee->expediente)->value('infonavit');
+                if($infonavit > 0) $this->calcularNominaService->infonavit($infonavit, $employee, $calendar);
 
                 // calcular dias trabajados
                 $faltas = NominaConcept::getFaltas($calendar->year, $calendar->almcnt, $employee->expediente, $calendar->semana);
-                $diasTrabajados = $calendar->diasPagados - $faltas;            
+                // $diasTrabajados = $calendar->diasPagados - $faltas;
+                $diasTrabajados = $calendar->diasPagados;           
 
                 // calcular ingreso semanal grabado
-                $sueldoSemanalGravado = NominaConcept::getSueldoGrabado($calendar->year, $calendar->almcnt, $employee->expediente, $calendar->semana, $calendar->semana);                
-                $sueldoSemanalGravado = ($salarioDiario * $diasTrabajados) + $sueldoSemanalGravado;
+                $sueldoSemanalGravado = NominaConcept::getSueldoGrabado($calendar->year, $calendar->almcnt, $employee->expediente, $calendar->semana, $calendar->semana, $UMA);
+                $sueldoSemanalGravado = $sueldoSemanal + $sueldoSemanalGravado;
                 
                 // calcular SDI
                 $salarioFijo = $salarioDiario + $employee->primaVacacional($employee->vacaciones, $salarioDiario) + $employee->aguinaldoDiario($salarioDiario);
                 $parteVariable = $employee->parteVariable($calendar->bimestre);
                 
-                if($employee->salary->puesto == "VELADOR"){
-                    $pagoDiaDomingo = $employee->pagoDiaDomingo($salarioDiario);
-                    $primaDominical = $employee->primaDominical($pagoDiaDomingo);
-                    $pagoFijoVelador = $pagoDiaDomingo + $primaDominical;
-                }else{
-                    $pagoDiaDomingo = 0;
-                    $primaDominical = 0;
-                    $pagoFijoVelador = 0;									
-                }
+				// pago dia domingo 
+				// $monto = NominaConcept::getMonto($calendar->year, $calendar->almcnt, $employee->expediente, 7, $calendar->semana, $calendar->semana);
+				$pagoDiaDomingo = $employee->pagoDiaDomingo; 
+				// pago prima dominical
+				// $monto = NominaConcept::getMonto($calendar->year, $calendar->almcnt, $employee->expediente, 2, $calendar->semana, $calendar->semana);
+				$primaDominical = $employee->primaDominical;
 
+				$pagoFijoVelador = $pagoDiaDomingo + $primaDominical;
+				
                 $SDI = $salarioFijo + $parteVariable + $pagoFijoVelador;
                
                 $this->calcularNominaService->calcularNomina($sueldoMensual, $sueldoSemanal, $diasTrabajados, $sueldoSemanalGravado, $SDI, $employee, $calendar, $UMA);
-                
-                $this->actualizarCalculo(); // marca las filas
+                                
             }
 		
         } // foreach
 
-        //return response()->json(['message' => 'Nómina calculada y almacenada con éxito'], 200);
+        // marcar filas
+        $this->actualizarCalculo(); 
 
         return redirect()->route('calculo.success');
         
     } // calcularNomina  
+
+    public function cierreNomina()
+    {
+        $user = Auth::user();         
+
+        $calendar = Calendar::where('almcnt', $user->almcnt)
+		->where('year', $user->currentYear)
+        ->where('puntero', 1)
+        ->first();
+
+        $count = NominaConcept::where('year', $calendar->year)
+        ->where('almcnt', $calendar->almcnt)
+        ->where('semana', $calendar->semana)
+        ->count();        
+
+        return view('nomina_concepts.cierre-nomina', compact('calendar','count'));
+    }
+
+    // 
+    public function closeNomina()
+    {
+        $user = Auth::user();         
+
+        $calendar = Calendar::where('almcnt', $user->almcnt)
+		->where('year', $user->currentYear)
+        ->where('puntero', 1)
+        ->first();
+
+        $ultimaSemanaCalendario = Calendar::getUltimaSemanaCalendario($calendar->year, $calendar->almcnt);
+        
+        if($calendar->semana >= $ultimaSemanaCalendario) {
+
+            Calendar::where('year', $calendar->year)
+            ->where('almcnt', $calendar->almcnt)
+            ->where('semana', $calendar->semana)
+            ->update([ 'status' => '1' ]);
+
+        } else {
+        
+            Calendar::where('year', $calendar->year)
+            ->where('almcnt', $calendar->almcnt)
+            ->where('semana', $calendar->semana)
+            ->update([ 'status' => '1', 'puntero' => '0' ]);
+
+            Calendar::where('year', $calendar->year)
+            ->where('almcnt', $calendar->almcnt)
+            ->where('semana', $calendar->semana + 1)
+            ->update([ 'puntero' => '1' ]);
+
+        }
+
+        return redirect()->back()->with('success', 'Cierre de nómina aplicado correctamente.');
+
+    }
 
     public function calcularFormulas()
     {
@@ -115,7 +177,6 @@ class CalcularNominaController extends Controller
     
         return view('nomina_concepts.calcular-formulas', compact('calendar','count'));
     }    
-
 
     public function actualizarCalculo()
     {
@@ -140,7 +201,6 @@ class CalcularNominaController extends Controller
         return view('nomina_concepts.calculo-success');
     }
 
-
     public function resetForm()
     {
         $user = Auth::user(); 
@@ -152,6 +212,18 @@ class CalcularNominaController extends Controller
 
         return view('nomina_concepts.reset-movements', compact('calendar'));
     }
+
+    public function deleteForm()
+    {
+        $user = Auth::user(); 
+
+        $calendar = Calendar::where('almcnt', $user->almcnt)
+		->where('year', $user->currentYear)
+        ->where('puntero', 1)
+        ->first();
+
+        return view('nomina_concepts.delete-movements', compact('calendar'));
+    }    
 
     public function resetMovements(Request $request)
     {
@@ -170,5 +242,46 @@ class CalcularNominaController extends Controller
 
         return redirect()->back()->with('success', 'Movimientos reseteados correctamente.');
     }    
+
+    // 
+    public function deleteMovements(Request $request)
+    {
+        $user = Auth::user();
+
+        // Obtener el calendario actual
+        $calendar = Calendar::where('almcnt', $user->almcnt)
+            ->where('year', $user->currentYear)
+            ->where('puntero', 1)
+            ->first();
+    
+        // Asegurarse de que el calendario existe
+        if ($calendar) {
+            // Eliminar movimientos de nomina_concepts para la semana actual
+            NominaConcept::where('year', $calendar->year)
+                ->where('almcnt', $calendar->almcnt)
+                ->where('semana', $calendar->semana)
+                ->delete();
+    
+            // Actualizar el calendario actual para cambiar el estado y puntero
+            Calendar::where('year', $calendar->year)
+                ->where('almcnt', $calendar->almcnt)
+                ->where('semana', $calendar->semana)
+                ->update(['status' => '0', 'puntero' => '0']);
+    
+            // Actualizar el calendario de la semana anterior para establecer el puntero
+            Calendar::where('year', $calendar->year)
+                ->where('almcnt', $calendar->almcnt)
+                ->where('semana', $calendar->semana - 1)
+                ->update(['puntero' => '1', 'status' => '0']);
+    
+            // Redirigir a la ruta 'impresion.tabla' con un mensaje de éxito
+            return redirect()->route('impresion.tabla')->with('success', 'Cierre de nómina aplicado correctamente.');
+
+        }
+    
+        return redirect()->back()->with('error', 'No se encontró el calendario actual.');
+
+    }    
+
 
 } // class

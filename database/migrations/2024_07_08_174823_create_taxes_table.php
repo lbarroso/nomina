@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('taxes', function (Blueprint $table) {
             $table->id();
+            $table->enum('periodo', ['semanal', 'quincenal','mensual'])->default('semanal');
             $table->float('limiteInferior',7,2)->unsigned()->default(0);
             $table->float('limiteSuperior',7,2)->unsigned()->default(0);
             $table->float('cuotaFija',7,2)->unsigned()->default(0);

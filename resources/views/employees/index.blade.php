@@ -26,9 +26,9 @@
 
 			<div class="table-responsive">  
 			
-				<table class="table table-striped table-bordered table-hover" id="employee" class="display" style="width:100%; font-size:11pt">
+				<table class="table table-striped table-bordered table-hover text-uppercase" id="employee" class="display" style="width:100%; font-size:11pt">
 					
-					<thead class="thead-dark">
+					<thead class="table-custom">
 						<tr>
 						<th></th>
 						<th>Alta/Baja</th>		
@@ -50,6 +50,7 @@
 				
 			</div>
 
+			<a href="{{ route('employees.plantillapdf') }}" target="_blank" class="link">descargar plantilla PDF</a>
 		</div>
 	  
 	</div>

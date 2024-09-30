@@ -44,7 +44,7 @@ class CreateEmployeesTable extends Migration
             $table->string('regimen',45)->nullable();
             $table->string('tipoContrato',45)->default('DEFINITIVO');
             $table->string('tipoJornada',45)->default('COMPLETA 8 HORAS');
-            $table->string('periodoPago',45)->default('Semanal');
+            $table->string('periodoPago',45)->default('semanal');
 
             // unico compuesto
             $table->unique(["almcnt", "expediente"], 'empleado_unico');

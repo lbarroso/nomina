@@ -106,8 +106,29 @@
 							<span class="text-danger">{{ $message }}</span>
 						@enderror
 					</div>
-
-					<div class="form-group col-md-8">
+					
+					<div class="form-group col-md-4">
+						<label for="estado">Estado(*):</label>
+						<select name="estado" id="estado" class="form-control" required>
+							<option value="">Seleccionar opción</option>
+							@php
+								$estados = [
+									"Aguascalientes", "Baja California", "Baja California Sur", "Campeche", 
+									"Chiapas", "Chihuahua", "Ciudad de México", "Coahuila", "Colima", 
+									"Durango", "Estado de México", "Guanajuato", "Guerrero", "Hidalgo", 
+									"Jalisco", "Michoacán", "Morelos", "Nayarit", "Nuevo León", 
+									"Oaxaca", "Puebla", "Querétaro", "Quintana Roo", "San Luis Potosí", 
+									"Sinaloa", "Sonora", "Tabasco", "Tamaulipas", "Tlaxcala", 
+									"Veracruz", "Yucatán", "Zacatecas"
+								];
+							@endphp
+							@foreach($estados as $estado)
+								<option value="{{ $estado }}" {{ old('estado') == $estado ? 'selected' : '' }}>{{ $estado }}</option>
+							@endforeach
+						</select>						
+					</div>	
+					
+					<div class="form-group col-md-4">
 						<label for="salary_id">Puesto(*):</label>
 						@error('salary_id')
 							<span class="text-danger">{{ $message }}</span>

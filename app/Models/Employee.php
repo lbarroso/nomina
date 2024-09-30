@@ -31,7 +31,10 @@ class Employee extends Model
         'valeMensual',
         'valeNavideno',
         'variableOtro',
-        'infonavit'
+        'pagoDiaDomingo',
+        'primaDominical',
+        'infonavit',
+        'estado'
     ];
 
     // relacion salarios muchos a uno
@@ -83,13 +86,16 @@ class Employee extends Model
     public function aguinaldoDiario($salarioDiario)
     {
         $diasDelAnioActual = Carbon::now()->daysInYear();
+        // $diasDelAnioActual = 365;
         return ($salarioDiario * 40) / $diasDelAnioActual;
     }   
 
     // Método para calcular la prima vacacional
     public function primaVacacional($diasVacaciones, $salarioDiario)
     {
-        return ($diasVacaciones * $salarioDiario * 0.25) / 365;
+		$diasDelAnioActual = Carbon::now()->daysInYear();
+		
+        return ($diasVacaciones * $salarioDiario * 0.25) / $diasDelAnioActual;
     }    
 
     // Método para calcular el pago del día domingo
