@@ -17,12 +17,14 @@ return new class extends Migration
             $table->smallInteger('semana')->default(0);
             $table->smallInteger('mes')->default(0);
             $table->smallInteger('year')->default(0);            
-            $table->string('descripcion',65)->nullable();
-            $table->enum('periodicidad', ['semanal', 'especial']);
+            $table->text('motivo')->nullable();
+            $table->enum('periodicidad', ['semanal', 'especial', 'extraordinaria', 'extemporanea']);
+            $table->enum('tipo_nomina', ['regular', 'extraordinaria', 'extemporanea'])->default('regular');
             $table->date('fechaInicio')->nullable(); 
             $table->date('fechaFin')->nullable();            
             $table->date('fechaPago')->nullable();
             $table->smallInteger('diasPagados')->default(7);
+            $table->unique(['year', 'almcnt', 'semana']);
         });
     }
 

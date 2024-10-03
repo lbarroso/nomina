@@ -25,6 +25,8 @@ return new class extends Migration
             $table->string('tipo')->nullable();
             $table->smallInteger('diasTrabajados')->default(0);
             $table->smallInteger('calculo')->default(0);
+            
+
         });
     }
 
