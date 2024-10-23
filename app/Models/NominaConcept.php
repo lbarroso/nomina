@@ -29,6 +29,8 @@ class NominaConcept extends Model
         'tipo',
 		'diasTrabajados',
 		'calculo',
+		'tipo_nomina',
+		'nomina_id', // Nueva columna agregada
     ];
 
     // Campos de fecha (si se necesita trabajar con fechas como instancias de Carbon)
@@ -74,9 +76,9 @@ class NominaConcept extends Model
 			if($concept->id == 7) $concept->monto = $concept->monto * 0.50;
 			// prima vacacional
 			if($concept->id == 9){
-				$exedente = 15 * $UMA;
+				$exedente = 15 * $UMA; // 1628.55
 				$exedente = $concept->monto - $exedente;
-				if($exedente > 0) $concept->monto = $exedente;
+				$concept->monto = ($exedente > 0) ? $exedente : 0; // Si el exedente es mayor a 0, se usa; de lo contrario, es 0
 			} 
             // dias festivos
             if($concept->id == 12){
@@ -165,6 +167,16 @@ class NominaConcept extends Model
 			->where('nomina_concepts.tipo', 'percepcion')
             ->get();	
 	}
+
+	// percepciones por empleado
+	public function ScopeGetNominaPercepciones($query, $nomina_id, $expediente)
+	{
+        return $query->where('nomina_concepts.nomina_id', $nomina_id)
+            ->where('nomina_concepts.expediente', $expediente)
+			->where('nomina_concepts.tipo', 'percepcion')
+            ->get();	
+	}
+	    
 	
 	// total percepciones
 	public function ScopeGetTotalPercepciones($query, $year, $almcnt, $semana)
@@ -175,6 +187,14 @@ class NominaConcept extends Model
 			->where('nomina_concepts.tipo', 'percepcion')
             ->sum('nomina_concepts.monto');
 	}
+
+	// total percepciones
+	public function ScopeGetTotalNominaPercepciones($query, $nomina_id)
+	{
+        return $query->where('nomina_concepts.nomina_id', $nomina_id)
+			->where('nomina_concepts.tipo', 'percepcion')
+            ->sum('nomina_concepts.monto');
+	}	
 	
 	// deducciones por empleado
 	public function ScopeGetDeducciones($query, $year, $almcnt, $expediente, $semanaCalendario)
@@ -186,6 +206,15 @@ class NominaConcept extends Model
 			->where('nomina_concepts.tipo', 'deduccion')
             ->get();	
 	}
+
+	// deducciones por empleado
+	public function ScopeGetNominaDeducciones($query, $nomina_id, $expediente)
+	{
+        return $query->where('nomina_concepts.nomina_id', $nomina_id)
+            ->where('nomina_concepts.expediente', $expediente)
+			->where('nomina_concepts.tipo', 'deduccion')
+            ->get();	
+	}    
 	
 	// total percepciones
 	public function ScopeGetTotalDeducciones($query, $year, $almcnt, $semana)
@@ -196,6 +225,14 @@ class NominaConcept extends Model
 			->where('nomina_concepts.tipo', 'deduccion')
             ->sum('nomina_concepts.monto');
 	}
+	
+	// total deducciones
+	public function ScopeGetTotalNominaDeducciones($query, $nomina_id)
+	{
+        return $query->where('nomina_concepts.nomina_id', $nomina_id)
+			->where('nomina_concepts.tipo', 'deduccion')
+            ->sum('nomina_concepts.monto');
+	}		
 	
 	// isr Neto por empleado
     public function scopeGetIsrNeto($query, $year, $almcnt, $expediente, $semana)
@@ -218,6 +255,15 @@ class NominaConcept extends Model
 			->whereBetween('nomina_concepts.semana', [$semanaCalendarioInicio, $semanaCalendarioFinal])
 			->sum('nomina_concepts.monto');
     }		
+
+	// monto por concepto nomina especial
+    public function scopeGetMontoEspecial($query, $nomina_id, $expediente, $concept_id)
+    {
+		return $query->where('nomina_concepts.nomina_id', $nomina_id)
+			->where('nomina_concepts.concept_id', $concept_id) // concepto
+			->where('nomina_concepts.expediente', $expediente)
+			->sum('nomina_concepts.monto');
+    }	    
 	
 	
 } // class

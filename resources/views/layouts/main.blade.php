@@ -111,15 +111,28 @@
             <a id="dropdownSubMenu1" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="nav-link dropdown-toggle">Reportes</a>
             <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">
               
-			  <li><a href="{{ route('impresion.tabla') }}" class="dropdown-item"> <i class="fas fa-print"></i> Impresión de nómina</a></li>
-			  <li><a href="{{ route('poliza.tabla') }}" class="dropdown-item"> <i class="fas fa-file-invoice-dollar"></i> Polizas  </a></li>
-			  <li><a href="{{ route('recibo.tabla') }}" class="dropdown-item"> <i class="fas fa-receipt"></i> Recibos de empleados </a></li>
-			  <li><a href="{{ route('home') }}" class="dropdown-item"> <i class="fas fa-dollar-sign"></i> Integración de salarios </a></li>
-			  <li><a href="{{ route('acumulado.index') }}" class="dropdown-item"> <i class="fas fa-chart-line"></i> Acumulado de nómina </a></li>
-			  
-			</ul>
+              <li><a href="{{ route('impresion.tabla') }}" class="dropdown-item"> <i class="fas fa-print"></i> Impresión de nómina</a></li>
+              <li><a href="{{ route('poliza.tabla') }}" class="dropdown-item"> <i class="fas fa-file-invoice-dollar"></i> Polizas  </a></li>
+              <li><a href="{{ route('recibo.tabla') }}" class="dropdown-item"> <i class="fas fa-receipt"></i> Recibos de empleados </a></li>
+              <li><a href="{{ route('home') }}" class="dropdown-item"> <i class="fas fa-dollar-sign"></i> Integración de salarios </a></li>
+              <li><a href="{{ route('acumulado.index') }}" class="dropdown-item"> <i class="fas fa-chart-line"></i> Acumulado de nómina </a></li>
+              
+            </ul>
           </li>
-        </ul>		
+        </ul>
+
+        <ul class="navbar-nav">
+          <li class="nav-item dropdown">
+            <a id="dropdownSubMenu1" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="nav-link dropdown-toggle">Nómina Especial</a>
+            <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">
+        
+              <li><a href="{{ route('nominas.index') }}" class="dropdown-item">  <i class="fas fa-calendar-alt"></i>  Extraordinarias/Extemporáneas </a></li>
+ 
+      			  
+            </ul>
+          </li>
+        </ul>
+		
       </div>
 
       <!-- Right navbar links -->

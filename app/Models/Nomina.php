@@ -10,29 +10,41 @@ class Nomina extends Model
 {
     use HasFactory;
 
-    // desactivar timestamps
-    public $timestamps = false;
-
+    // Tabla asociada
     protected $table = 'nominas';
 
-    // Campos llenables
     protected $fillable = [
-        'almcnt', 
-        'semana', 
-        'mes', 
-        'year', 
-        'descripcion', 
-        'periodicidad', 
-        'fechaInicio', 
-        'fechaFin', 
-        'fechaPago'
+        'almcnt', 'semana', 'mes', 'year', 'motivo', 'periodicidad', 'tipo_nomina',
+        'fechaInicio', 'fechaFin', 'fechaPago', 'diasPagados', 'diasTrabajados', 'concept_id', 'status'
     ];
 
-    // Campos de fecha (si se necesita trabajar con fechas como instancias de Carbon)
-    protected $dates = [
-        'fechaInicio',
-        'fechaFin',
-        'fechaPago'
-    ];    
-    
-} // class
+    // Relación con el modelo Concept
+    public function concept()
+    {
+        return $this->belongsTo(Concept::class);
+    }
+
+    /**
+     * Accesor para formatear la fecha de inicio.
+     */
+    public function getFechaInicioFormattedAttribute()
+    {
+        return \Carbon\Carbon::parse($this->fechaInicio)->format('d-m-Y');
+    }
+
+    /**
+     * Accesor para formatear la fecha de fin.
+     */
+    public function getFechaFinFormattedAttribute()
+    {
+        return \Carbon\Carbon::parse($this->fechaFin)->format('d-m-Y');
+    }
+
+    /**
+     * Accesor para formatear la fecha de pago.
+     */
+    public function getFechaPagoFormattedAttribute()
+    {
+        return \Carbon\Carbon::parse($this->fechaPago)->format('d-m-Y');
+    }
+}

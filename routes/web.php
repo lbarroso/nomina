@@ -18,7 +18,11 @@ use App\Http\Controllers\PlantillaEmployeeController;
 use App\Http\Controllers\AcumuladoNominaController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PasswordController;
-
+use App\Http\Controllers\NominaController;
+use App\Http\Controllers\ReciboNominaController;
+use App\Http\Controllers\PolizaNominaController;
+use App\Http\Controllers\ImpresionNominaPdfController;
+use App\Http\Controllers\PlantillaEspecialController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -68,12 +72,15 @@ Route::post('/close-nomina', [CalcularNominaController::class, 'closeNomina'])->
 Route::get('/impresion-tabla', [ImpresionNominaController::class, 'impresiontabla'])->name('impresion.tabla');
 Route::post('/impresion-tabla', [ImpresionNominaController::class, 'impresiontabla'])->name('impresion.tabla');
 Route::get('/impresion-pdf/{semana}', [ImpresionNominaController::class, 'pdf'])->name('impresion.pdf');
+Route::get('/impresion-nomina-pdf/{id}', [ImpresionNominaPdfController::class, 'pdf'])->name('impresion.nomina.pdf');
 Route::get('/poliza-tabla', [PolizaController::class, 'polizatabla'])->name('poliza.tabla');
 Route::post('/poliza-tabla', [PolizaController::class, 'polizatabla'])->name('poliza.tabla');
 Route::get('/poliza-pdf/{semana}', [PolizaController::class, 'pdf'])->name('poliza.pdf');
+Route::get('/poliza-nomina-pdf/{id}', [PolizaNominaController::class, 'pdf'])->name('poliza.nomina.pdf');
 Route::get('/recibo-tabla', [ReciboController::class, 'recibotabla'])->name('recibo.tabla');
 Route::post('/recibo-tabla', [ReciboController::class, 'recibotabla'])->name('recibo.tabla');
 Route::get('/recibo-pdf/{semana}', [ReciboController::class, 'pdf'])->name('recibo.pdf');
+Route::get('/recibo-nomina-pdf/{id}', [ReciboNominaController::class, 'pdf'])->name('recibo.nomina.pdf');
 // acumulado
 Route::get('/acumualdo', [AcumuladoNominaController::class, 'index'])->name('acumulado.index');
 Route::post('/acumulado/post', [AcumuladoNominaController::class, 'acumulado'])->name('acumulado.post');
@@ -89,6 +96,7 @@ Route::post('/firmas/update', [FirmaController::class, 'update'])->name('firmas.
 // plantillas
 Route::get('/plantillas', [PlantillaNominaController::class, 'index'])->name('plantillas.index');
 Route::post('/plantilla-nomina/store', [PlantillaNominaController::class, 'store'])->name('plantilla.nomina.store');
+Route::get('/plantilla-nomina-especial/store/{id}', [PlantillaEspecialController::class, 'store'])->name('plantilla.nomina.especial.store');
 Route::get('/plantilla-nomina/download/{semana}', [PlantillaNominaController::class, 'excel'])->name('plantilla.nomina.download');
 Route::post('/plantilla-employee/store', [PlantillaEmployeeController::class, 'store'])->name('plantilla.employee.store');
 Route::get('/plantilla-employee/download/{semana}', [PlantillaEmployeeController::class, 'excel'])->name('plantilla.employee.download');
@@ -101,3 +109,14 @@ Route::patch('notifications/{id}/mark-as-read', [NotificationController::class, 
 Route::get('change-password', [PasswordController::class, 'changePasswordForm'])->name('password.change');
 // Actualizar la contraseña
 Route::put('update-password', [PasswordController::class, 'updatePassword'])->name('password.update');
+
+// nominas especiales
+Route::resource('nominas', NominaController::class)->only(['index', 'store', 'create']);
+Route::get('/nominas/empleados/{id}', [NominaController::class, 'nominasEmpleados'])->name('nominas.empleados');
+Route::post('/nominas/{id}/agregar-empleado', [NominaController::class, 'agregarEmpleado'])->name('nominas.agregarEmpleado');
+Route::put('/nominas/editar-empleado', [NominaController::class, 'editarEmpleado'])->name('nominas.editarEmpleado');
+Route::post('/nominas/aplicar-calculo/{nomina_id}', [NominaController::class, 'aplicarCalculo'])->name('nominas.aplicarCalculo');
+Route::put('/nominas/cerrar/{id}', [NominaController::class, 'cerrarNomina'])->name('nominas.cerrar');
+// Ruta para eliminar un empleado de la nómina
+Route::delete('/nominas/empleado/{id}', [NominaController::class, 'destroyEmpleado'])->name('nominas.empleado.destroy');
+

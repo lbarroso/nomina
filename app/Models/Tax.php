@@ -20,7 +20,7 @@ class Tax extends Model
     // impuesto previo semanal ISR
     public function scopeIsrSemanal($query, $sueldoGravado)
     {
-        
+
         $row = $query->where('limiteInferior', '<=', $sueldoGravado)
         ->where('limiteSuperior', '>=', $sueldoGravado)
 		->where('periodo', 'semanal')

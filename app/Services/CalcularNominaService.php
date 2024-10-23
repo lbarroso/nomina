@@ -58,6 +58,16 @@ class CalcularNominaService
 
     }
 
+    /**
+     * nominas especiales 
+     */
+    public function calcularNominaEspecial($sueldoSemanalGravado)
+    {
+        $isrNeto = $this->calcularISRSemanal($sueldoSemanalGravado);
+        
+        return $isrNeto;
+    }
+
     // pagar solo velador
     public function velador($pagoDiaDomingo, $primaDominical, $employee, $calendar)
     {
